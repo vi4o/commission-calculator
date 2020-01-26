@@ -22,6 +22,7 @@
         }
     ],
     "require": {
+        "php": "^7.4",
         "php-decimal/php-decimal": "^1.1"
     },
     "scripts": {

@@ -1,0 +1,9 @@
+version: '2.4'
+
+services:
+    php:
+        build: ./
+        ports:
+            - 9000:9000
+        volumes:
+            - .:/app

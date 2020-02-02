@@ -2,10 +2,9 @@
 
 namespace App\Calculator;
 
-
 use App\Money;
 use App\Operation;
-use PHPUnit\Framework\TestCase;
+use App\TestCase;
 
 class AbstractCalculatorChainTest extends TestCase
 {
@@ -45,8 +44,6 @@ class AbstractCalculatorChainTest extends TestCase
         $operationMock = $this->createMock(Operation::class);
         $actualCommission = $this->calculator->calculateCommission($operationMock, $initialCommission);
 
-        $this->assertEquals($expectedCommission->amount->toFixed(2), $actualCommission->amount->toFixed(2));
-        $this->assertEquals($expectedCommission->currencyId, $actualCommission->currencyId);
-
+        $this->assertMoneyAreEqual($expectedCommission, $actualCommission);
     }
 }

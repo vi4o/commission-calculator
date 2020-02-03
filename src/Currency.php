@@ -3,7 +3,6 @@
 
 namespace App;
 
-
 class Currency
 {
     public const EUR = 'EUR';
@@ -25,5 +24,4 @@ class Currency
             throw new \Exception('Unsupported currency used');
         }
     }
-
 }

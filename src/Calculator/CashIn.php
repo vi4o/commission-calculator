@@ -44,6 +44,5 @@ class CashIn extends AbstractCalculatorChain
         } else {
             return parent::calculateCommission($operation, $commissionSoFar);
         }
-
     }
 }

@@ -35,6 +35,4 @@ class CurrencyConverter
 
         return new Money($convertedAmount, $newCurrency);
     }
-
-
 }

@@ -14,6 +14,7 @@ class OperationsStorage implements OperationsStorageInterface
     public function __construct(CurrencyConverter $currencyConverter)
     {
         $this->currencyConverter = $currencyConverter;
+        $this->operations = [];
     }
 
     /**

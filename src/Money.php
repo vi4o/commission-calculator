@@ -54,6 +54,22 @@ class Money
     }
 
     /**
+     * Subtract $operand money
+     * @param Money $operand
+     * @return Money
+     * @throws \Exception
+     */
+    public function sub(Money $operand): Money
+    {
+        if ($this->isFromTheSameCurrency($operand)) {
+            $sum = $this->amount->sub($operand->getAmount());
+        } else {
+            throw new \Exception('Cannot subtract money of different currencies!');
+        }
+        return new Money($sum, $this->currency);
+    }
+
+    /**
      * Multiply by $multiplier
      * @param Decimal $multiplier
      * @return Money
@@ -81,7 +97,7 @@ class Money
     }
 
     /**
-     * Return true if $operand is greater than the object
+     * Return true if $this is greater than the $operand
      * @param Money $operand
      * @return bool
      * @throws \Exception
@@ -98,5 +114,21 @@ class Money
     public function __toString()
     {
         return $this->amount->toFixed(2) . ' ' . $this->getCurrency();
+    }
+
+    /**
+     * Return true if $this is greater than or equal to the $operand
+     * @param Money $operand
+     * @return bool
+     * @throws \Exception
+     */
+    public function gte(Money $operand) : bool
+    {
+        if ($this->isFromTheSameCurrency($operand)) {
+            $comparisonResult = $this->amount->compareTo($operand->getAmount());
+            return $comparisonResult === 1 || $comparisonResult === 0;
+        } else {
+            throw new \Exception('Cannot compare money of different currencies!');
+        }
     }
 }

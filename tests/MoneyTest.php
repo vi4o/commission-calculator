@@ -21,6 +21,21 @@ class MoneyTest extends TestCase
         $object->add($objectFromOtherCurrency);
     }
 
+    public function testSub()
+    {
+        $object = new Money(5, Currency::EUR);
+        $object2 = new Money(4, Currency::EUR);
+        $objectFromOtherCurrency = new Money(4, Currency::JPY);
+
+        $expectedResult = new Money(1, Currency::EUR);
+        $actualResult = $object->sub($object2);
+
+        $this->assertMoneyAreEqual($expectedResult, $actualResult);
+
+        $this->expectExceptionMessage('Cannot subtract money of different currencies!');
+        $object->sub($objectFromOtherCurrency);
+    }
+
     public function testMul()
     {
         $object = new Money(5, Currency::EUR);
@@ -65,5 +80,21 @@ class MoneyTest extends TestCase
 
         $this->expectExceptionMessage('Cannot compare money of different currencies!');
         $object->gt($objectFromOtherCurrency);
+    }
+
+    public function testGte()
+    {
+        $object = new Money(5, Currency::EUR);
+        $smallerObject = new Money(3, Currency::EUR);
+        $equalObject = new Money(5, Currency::EUR);
+        $biggerObject = new Money(6, Currency::EUR);
+        $objectFromOtherCurrency = new Money(6, Currency::USD);
+
+        $this->assertTrue($object->gte($smallerObject));
+        $this->assertTrue($object->gte($equalObject));
+        $this->assertFalse($object->gte($biggerObject));
+
+        $this->expectExceptionMessage('Cannot compare money of different currencies!');
+        $object->gte($objectFromOtherCurrency);
     }
 }

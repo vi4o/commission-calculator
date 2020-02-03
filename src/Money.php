@@ -6,20 +6,8 @@ use Decimal\Decimal;
 
 class Money
 {
-    public const EUR = 'EUR';
-    public const USD = 'USD';
-    public const JPY = 'JPY';
-    protected static array $currencies = [
-        1 => self::EUR,
-        2 => self::USD,
-        3 => self::JPY,
-    ];
-    protected static array $conversionRatesFromEur = [
-        2 => '1.1497',
-        3 => '129.53'
-    ];
     protected Decimal $amount;
-    protected int $currencyId;
+    protected string $currency;
 
     /**
      * Currency constructor.
@@ -29,22 +17,8 @@ class Money
      */
     public function __construct($amount, string $currency)
     {
-        $this->currencyId = $this->checkCurrencySupported($currency);
+        $this->currency = Currency::checkCurrencySupported($currency);
         $this->amount = new Decimal($amount);
-    }
-
-    /**
-     * @param string $currency
-     * @return int The currency id of the supported currency
-     * @throws \Exception
-     */
-    protected function checkCurrencySupported(string $currency): int
-    {
-        if ($id = array_search(strtoupper($currency), self::$currencies)) {
-            return $id;
-        } else {
-            throw new \Exception('Unsupported currency used');
-        }
     }
 
     /**
@@ -60,7 +34,7 @@ class Money
      */
     public function getCurrency() : string
     {
-        return self::$currencies[$this->currencyId];
+        return $this->currency;
     }
 
     /**
@@ -76,7 +50,7 @@ class Money
         } else {
             throw new \Exception('Cannot add money of different currencies!');
         }
-        return new Money($sum, Money::$currencies[$this->currencyId]);
+        return new Money($sum, $this->currency);
     }
 
     /**
@@ -87,7 +61,7 @@ class Money
      */
     public function mul(Decimal $multiplier) : Money
     {
-        return new Money($this->amount->mul($multiplier), $this->getCurrency());
+        return new Money($this->amount->mul($multiplier), $this->currency);
     }
 
     /**
@@ -98,39 +72,12 @@ class Money
      */
     public function div(Decimal $divider) : Money
     {
-        return new Money($this->amount->div($divider), $this->getCurrency());
+        return new Money($this->amount->div($divider), $this->currency);
     }
 
     public function isFromTheSameCurrency(Money $operand): bool
     {
-        return $this->currencyId === $operand->currencyId;
-    }
-
-    /**
-     * Convert to other currency
-     * @param string $currency
-     * @return Money
-     * @throws \Exception
-     */
-    public function convert(string $currency) : Money
-    {
-        $baseCurrencyId = 1;
-        $newCurrencyId = $this->checkCurrencySupported($currency);
-
-        $convertedAmount = null;
-        if ($newCurrencyId === $this->currencyId) {
-            return $this;
-        } elseif ($this->currencyId === $baseCurrencyId) {
-            $convertedAmount = $this->amount->mul(new Decimal(self::$conversionRatesFromEur[$newCurrencyId]));
-        } elseif ($newCurrencyId === $baseCurrencyId) {
-            $convertedAmount = $this->amount->div(new Decimal(self::$conversionRatesFromEur[$this->currencyId]));
-        } else {
-            $convertedAmount = $this->amount
-                ->div(new Decimal(self::$conversionRatesFromEur[$this->currencyId]))
-                ->mul(new Decimal(self::$conversionRatesFromEur[$newCurrencyId]));
-        }
-
-        return new Money($convertedAmount, Money::$currencies[$newCurrencyId]);
+        return $this->currency === $operand->currency;
     }
 
     /**

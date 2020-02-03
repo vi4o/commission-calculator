@@ -15,6 +15,12 @@ class Currency
         self::JPY,
     ];
 
+    public static array $currencyPrecisions = [
+        self::EUR => 2,
+        self::USD => 2,
+        self::JPY => 0,
+    ];
+
     public static function checkCurrencySupported(string $currency)
     {
         $currency = strtoupper(trim($currency));
